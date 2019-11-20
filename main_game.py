@@ -21,10 +21,26 @@ class Player(arcade.Sprite):
         self.center_x = WINDOW_WIDTH / 6
         self.center_y = WINDOW_HEIGHT / 5
 
-    def keypress(self):
+    def keypress_movement(self):
         if LeapsAndBoundsGame.input[0] == 1:
-            print(5)
             self.change_x = -PLAYER_MOVEMENT_SPEED
+        elif LeapsAndBoundsGame.input[1] == 1:
+            self.change_x = PLAYER_MOVEMENT_SPEED
+        elif LeapsAndBoundsGame.input[2] == 1:
+            self.change_y = -PLAYER_MOVEMENT_SPEED
+        elif LeapsAndBoundsGame.input[3] == 1:
+            self.change_y = PLAYER_MOVEMENT_SPEED
+        elif LeapsAndBoundsGame.input[0] == 0:
+            self.change_x = 0
+        elif LeapsAndBoundsGame.input[1] == 0:
+            self.change_x = 0
+        elif LeapsAndBoundsGame.input[2] == 0:
+            self.change_y = 0
+        elif LeapsAndBoundsGame.input[3] == 0:
+            self.change_y = 0
+
+    def update(self):
+        self.keypress()
 
 
 """class Ground(arcade.Sprite):
@@ -40,7 +56,7 @@ class LeapsAndBoundsGame(arcade.Window):
         self.score = 0
         self.player_list = None
         self.wall_list = None
-        self.input = []
+        LeapsAndBoundsGame.input = []
 
     def setup(self):
         """ Setup the game (or reset the game) """
@@ -48,14 +64,28 @@ class LeapsAndBoundsGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.player_list.append(Player())
         self.score = 0
-        self.input = [0, 0, 0, 0]
+        LeapsAndBoundsGame.input = [0, 0, 0, 0]
 
     def on_key_press(self, symbol: int, modifiers: int):
         print(self.input)
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
-            self.input[0] = 1
-        if symbol == arcade.key.RIGHT or symbol == arcade.key.D:
-            self.input[1] = 1
+            LeapsAndBoundsGame.input[0] = 1
+        elif symbol == arcade.key.RIGHT or symbol == arcade.key.D:
+            LeapsAndBoundsGame.input[1] = 1
+        elif symbol == arcade.key.DOWN or symbol == arcade.key.S:
+            LeapsAndBoundsGame.input[2] = 1
+        elif symbol == arcade.key.UP or symbol == arcade.key.W:
+            LeapsAndBoundsGame.input[3] = 1
+
+    def on_key_release(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.LEFT or symbol == arcade.key.A:
+            LeapsAndBoundsGame.input[0] = 0
+        elif symbol == arcade.key.RIGHT or symbol == arcade.key.D:
+            LeapsAndBoundsGame.input[1] = 0
+        elif symbol == arcade.key.DOWN or symbol == arcade.key.S:
+            LeapsAndBoundsGame.input[2] = 0
+        elif symbol == arcade.key.UP or symbol == arcade.key.W:
+            LeapsAndBoundsGame.input[3] = 0
 
     def on_draw(self):
         """ Called when it is time to draw the world """

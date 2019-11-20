@@ -2,25 +2,30 @@ import arcade
 
 
 # Define constants
+GAME_TITLE = "Introduction"
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 600
 BACKGROUND_COLOR = arcade.color.BLACK
-GAME_TITLE = "Introduction"
+BACKGROUND_SPEED = 5
 GAME_SPEED = 1/60
 RIGHT = 0
 LEFT = 1
-PLAYER_SCALE = 0.25
+PLAYER_SCALE = 0.28
 TILE_SCALING = 0.32
 PLAYER_MOVEMENT_SPEED = 5
-BACKGROUND_SPEED = 5
-IMAGE_WIDTH = 1200
+GROUND_WIDTH = 1200
+GROUND_HEIGHT = 94
+PLAYER_HEIGHT = 383
+PLAYER_WIDTH = 300
+GRASS_HEIGHT = 150
+GRASS_WIDTH = 1200
 
 
 class Player(arcade.Sprite):
     def __init__(self):
         super().__init__("images/Character.png", PLAYER_SCALE)
         self.center_x = WINDOW_WIDTH / 6
-        self.center_y = WINDOW_HEIGHT / 5
+        self.center_y = 200
 
     def movement_start(self):
         if LeapsAndBoundsGame.input[0] == 1:
@@ -37,32 +42,44 @@ class Player(arcade.Sprite):
         self.movement_start()
 
 
-class Background(arcade.Sprite):
+class Grass(arcade.Sprite):
     """found on stackoverflow (https://stackoverflow.com/questions/55167496/infinite-scrolling-background-in-python),
     adapted to class format"""
     def __init__(self):
-        super().__init__("images/Ground.png", )
-        self.center_x = IMAGE_WIDTH // 2
-        self.center_y = WINDOW_HEIGHT // 2
+        super().__init__("images/Grass.png")
+        self.center_x = GRASS_WIDTH // 2
+        self.center_y = GRASS_HEIGHT // 2
         self.change_x = -BACKGROUND_SPEED
 
     def update(self):
         super().update()
-        if self.left == -IMAGE_WIDTH:
-            self.center_x = WINDOW_WIDTH + IMAGE_WIDTH // 2
+        if self.left == -GRASS_WIDTH:
+            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
 
 
-class Background2(arcade.Sprite):
+class Grass2(arcade.Sprite):
     def __init__(self):
-        super().__init__("images/Ground.png", )
-        self.center_x = IMAGE_WIDTH + WINDOW_WIDTH // 2
-        self.center_y = WINDOW_HEIGHT // 2
+        super().__init__("images/Grass.png")
+        self.center_x = GRASS_WIDTH + WINDOW_WIDTH // 2
+        self.center_y = GRASS_HEIGHT // 2
         self.change_x = -BACKGROUND_SPEED
 
     def update(self):
         super().update()
-        if self.left == -IMAGE_WIDTH:
-            self.center_x = WINDOW_WIDTH + IMAGE_WIDTH // 2
+        if self.left == -GRASS_WIDTH:
+            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
+
+
+class Ground(arcade.Sprite):
+    def __init__(self):
+        super().__init__("images/Ground.png")
+        self.center_x = WINDOW_WIDTH // 2
+        self.center_y = GROUND_HEIGHT // 2
+
+
+class Rocks(arcade.Sprite):
+    def __init__(self):
+        super().__init__("")
 
 
 class LeapsAndBoundsGame(arcade.Window):
@@ -73,6 +90,7 @@ class LeapsAndBoundsGame(arcade.Window):
         self.score = 0
         self.player_list = None
         self.background_list = None
+        self.floor_list = None
         LeapsAndBoundsGame.input = []
 
     def setup(self):
@@ -80,9 +98,12 @@ class LeapsAndBoundsGame(arcade.Window):
         arcade.set_background_color(BACKGROUND_COLOR)
         self.player_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
+        self.floor_list = arcade.SpriteList()
         self.player_list.append(Player())
-        self.background_list.append(Background())
-        self.background_list.append(Background2())
+        self.background_list.append(Grass())
+        self.background_list.append(Grass2())
+        self.floor_list.append(Ground())
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list)
         self.score = 0
         LeapsAndBoundsGame.input = [0, 0]
 
@@ -108,6 +129,8 @@ class LeapsAndBoundsGame(arcade.Window):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
         self.player_list.update()
         self.background_list.update()
+        self.floor_list.update()
+        self.physics_engine.update()
 
 
 def main():

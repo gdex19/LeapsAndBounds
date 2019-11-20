@@ -2,8 +2,8 @@ import arcade
 
 
 # Define constants
-WINDOW_WIDTH = 1250
-WINDOW_HEIGHT = 750
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
 BACKGROUND_COLOR = arcade.color.BLACK
 GAME_TITLE = "Introduction"
 GAME_SPEED = 1/60
@@ -12,6 +12,8 @@ LEFT = 1
 PLAYER_SCALE = 0.25
 TILE_SCALING = 0.32
 PLAYER_MOVEMENT_SPEED = 5
+BACKGROUND_SPEED = 5
+IMAGE_WIDTH = 1200
 
 
 class Player(arcade.Sprite):
@@ -30,15 +32,37 @@ class Player(arcade.Sprite):
         elif LeapsAndBoundsGame.input[1] == 0:
             self.change_x = 0
 
-
     def update(self):
         super().update()
         self.movement_start()
 
 
-"""class Ground(arcade.Sprite):
+class Background(arcade.Sprite):
+    """found on stackoverflow (https://stackoverflow.com/questions/55167496/infinite-scrolling-background-in-python),
+    adapted to class format"""
     def __init__(self):
-        super().__init__("images/tiles/grassMid.png", TILE_SCALING)"""
+        super().__init__("images/Ground.png", )
+        self.center_x = IMAGE_WIDTH // 2
+        self.center_y = WINDOW_HEIGHT // 2
+        self.change_x = -BACKGROUND_SPEED
+
+    def update(self):
+        super().update()
+        if self.left == -IMAGE_WIDTH:
+            self.center_x = WINDOW_WIDTH + IMAGE_WIDTH // 2
+
+
+class Background2(arcade.Sprite):
+    def __init__(self):
+        super().__init__("images/Ground.png", )
+        self.center_x = IMAGE_WIDTH + WINDOW_WIDTH // 2
+        self.center_y = WINDOW_HEIGHT // 2
+        self.change_x = -BACKGROUND_SPEED
+
+    def update(self):
+        super().update()
+        if self.left == -IMAGE_WIDTH:
+            self.center_x = WINDOW_WIDTH + IMAGE_WIDTH // 2
 
 
 class LeapsAndBoundsGame(arcade.Window):
@@ -48,14 +72,17 @@ class LeapsAndBoundsGame(arcade.Window):
         self.physics_engine = None
         self.score = 0
         self.player_list = None
-        self.wall_list = None
+        self.background_list = None
         LeapsAndBoundsGame.input = []
 
     def setup(self):
         """ Setup the game (or reset the game) """
         arcade.set_background_color(BACKGROUND_COLOR)
         self.player_list = arcade.SpriteList()
+        self.background_list = arcade.SpriteList()
         self.player_list.append(Player())
+        self.background_list.append(Background())
+        self.background_list.append(Background2())
         self.score = 0
         LeapsAndBoundsGame.input = [0, 0]
 
@@ -75,10 +102,12 @@ class LeapsAndBoundsGame(arcade.Window):
         """ Called when it is time to draw the world """
         arcade.start_render()
         self.player_list.draw()
+        self.background_list.draw()
 
     def on_update(self, delta_time):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
         self.player_list.update()
+        self.background_list.update()
 
 
 def main():

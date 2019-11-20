@@ -20,27 +20,29 @@ class Player(arcade.Sprite):
         self.character_face_direction = RIGHT
         self.center_x = WINDOW_WIDTH / 6
         self.center_y = WINDOW_HEIGHT / 5
+        self.change_x = 0
+        self.change_y = 0
 
     def keypress_movement(self):
         if LeapsAndBoundsGame.input[0] == 1:
-            self.change_x = -PLAYER_MOVEMENT_SPEED
+            self.center_x += -PLAYER_MOVEMENT_SPEED
         elif LeapsAndBoundsGame.input[1] == 1:
-            self.change_x = PLAYER_MOVEMENT_SPEED
+            self.center_x += PLAYER_MOVEMENT_SPEED
         elif LeapsAndBoundsGame.input[2] == 1:
-            self.change_y = -PLAYER_MOVEMENT_SPEED
+            self.center_y += -PLAYER_MOVEMENT_SPEED
         elif LeapsAndBoundsGame.input[3] == 1:
-            self.change_y = PLAYER_MOVEMENT_SPEED
+            self.center_y += PLAYER_MOVEMENT_SPEED
         elif LeapsAndBoundsGame.input[0] == 0:
-            self.change_x = 0
+            self.center_x += 0
         elif LeapsAndBoundsGame.input[1] == 0:
-            self.change_x = 0
+            self.center_x += 0
         elif LeapsAndBoundsGame.input[2] == 0:
-            self.change_y = 0
+            self.center_y += 0
         elif LeapsAndBoundsGame.input[3] == 0:
-            self.change_y = 0
+            self.center_y += 0
 
     def update(self):
-        self.keypress()
+        self.keypress_movement()
 
 
 """class Ground(arcade.Sprite):
@@ -67,7 +69,6 @@ class LeapsAndBoundsGame(arcade.Window):
         LeapsAndBoundsGame.input = [0, 0, 0, 0]
 
     def on_key_press(self, symbol: int, modifiers: int):
-        print(self.input)
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
             LeapsAndBoundsGame.input[0] = 1
         elif symbol == arcade.key.RIGHT or symbol == arcade.key.D:

@@ -8,7 +8,7 @@ from obstacles import Rocks
 GAME_TITLE = "Introduction"
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 600
-BACKGROUND_COLOR = arcade.color.BLACK
+BACKGROUND_COLOR = arcade.color.AIR_SUPERIORITY_BLUE
 GAME_SPEED = 1/60
 PLAYER_SCALE = 0.28
 TILE_SCALING = 0.32
@@ -18,7 +18,7 @@ PLAYER_WIDTH = 300
 PLAYER_JUMP_SPEED = 8
 GRASS_TOP = 94
 MULTIPLIER = 1
-TIMERMAX = 100
+TIMER_MAX = 100
 
 
 class Player(arcade.Sprite):
@@ -81,8 +81,8 @@ class LeapsAndBoundsGame(arcade.Window):
         self.background_list.append(Grass())
         self.background_list.append(Grass2())
         self.floor_list.append(Ground())
-
         self.obstacle_list.append(Rocks())
+
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list)
         self.score = 0
         self.timer = 0
@@ -99,6 +99,8 @@ class LeapsAndBoundsGame(arcade.Window):
             LeapsAndBoundsGame.down_up[0] = 1
         if symbol == arcade.key.UP or symbol == arcade.key.W or symbol == arcade.key.SPACE:
             LeapsAndBoundsGame.down_up[1] = 1
+        if symbol == arcade.key.ESCAPE:
+            arcade.pause()
             
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
@@ -116,10 +118,27 @@ class LeapsAndBoundsGame(arcade.Window):
         self.player_list.draw()
         self.background_list.draw()
         self.obstacle_list.draw()
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 20, 20, arcade.color.WHITE, 14)
 
-    def update_time_score(self):
+    def increase_time_score(self):
         self.timer += 1 * MULTIPLIER
+        if self.timer == TIMER_MAX:
+            self.timer = 0
+        elif self.timer == 99:
+            self.score += 1
 
+    def spawn_rocks(self):
+        if not self.obstacle_list:
+            self.obstacle_list.append(Rocks())
+
+    def obstacle_collision(self):
+        obstacle_hit_list1 = []
+        obstacle_hit_list2 = arcade.check_for_collision_with_list(self.player_list[0], self.obstacle_list)
+        if obstacle_hit_list1 != obstacle_hit_list2:
+            for obstacle in obstacle_hit_list2:
+                obstacle.remove_from_sprite_lists()
+                self.score -= 10
 
     def on_update(self, delta_time):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
@@ -128,6 +147,9 @@ class LeapsAndBoundsGame(arcade.Window):
         self.floor_list.update()
         self.obstacle_list.update()
         self.physics_engine.update()
+        self.increase_time_score()
+        self.obstacle_collision()
+        self.spawn_rocks()
 
 
 def main():

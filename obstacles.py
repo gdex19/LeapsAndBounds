@@ -15,7 +15,6 @@ class Rocks(arcade.Sprite):
         self.center_x = WINDOW_WIDTH + random.randint(WINDOW_WIDTH / 12, WINDOW_WIDTH)
         self.center_y = GRASS_TOP + ROCK_HEIGHT * ROCK_SCALE / 2
         self.change_x = -STATIONARY_SPEED
-        self.exists = True
 
     def update(self):
         super().update()

@@ -4,7 +4,7 @@ import arcade
 # Define constants
 from ground_grass import Ground, Grass, Grass2
 from obstacles import Rocks
-
+from targets import Rockets
 GAME_TITLE = "Introduction"
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 600
@@ -65,6 +65,7 @@ class LeapsAndBoundsGame(arcade.Window):
         self.background_list = None
         self.floor_list = None
         self.obstacle_list = None
+        self.target_list = None
         LeapsAndBoundsGame.left_right = None
         LeapsAndBoundsGame.down_up = None
 
@@ -76,12 +77,14 @@ class LeapsAndBoundsGame(arcade.Window):
         self.background_list = arcade.SpriteList()
         self.floor_list = arcade.SpriteList()
         self.obstacle_list = arcade.SpriteList()
+        self.target_list = arcade.SpriteList()
 
         self.player_list.append(Player())
         self.background_list.append(Grass())
         self.background_list.append(Grass2())
         self.floor_list.append(Ground())
         self.obstacle_list.append(Rocks())
+        self.target_list.append(Rockets())
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list)
         self.score = 0
@@ -118,6 +121,7 @@ class LeapsAndBoundsGame(arcade.Window):
         self.player_list.draw()
         self.background_list.draw()
         self.obstacle_list.draw()
+        self.target_list.draw()
         output = f"Score: {self.score}"
         arcade.draw_text(output, 20, 20, arcade.color.WHITE, 14)
 
@@ -128,7 +132,7 @@ class LeapsAndBoundsGame(arcade.Window):
         elif self.timer == 99:
             self.score += 1
 
-    def spawn_rocks(self):
+    def spawn_objects(self):
         if not self.obstacle_list:
             self.obstacle_list.append(Rocks())
 
@@ -146,10 +150,11 @@ class LeapsAndBoundsGame(arcade.Window):
         self.background_list.update()
         self.floor_list.update()
         self.obstacle_list.update()
+        self.target_list.update()
         self.physics_engine.update()
         self.increase_time_score()
         self.obstacle_collision()
-        self.spawn_rocks()
+        self.spawn_objects()
 
 
 def main():

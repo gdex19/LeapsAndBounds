@@ -1,26 +1,11 @@
 import arcade
-
+import menu_views
 # Define constants
+from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, GRASS_TOP, PLAYER_MOVEMENT_SPEED, \
+    PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY
 from ground_grass import Ground, Grass, Grass2
 from obstacles import Rocks, Rockets
 from targets import Fish
-
-GAME_TITLE = "Introduction"
-WINDOW_WIDTH = 1200
-WINDOW_HEIGHT = 600
-BACKGROUND_COLOR = arcade.color.AIR_SUPERIORITY_BLUE
-GAME_SPEED = 1 / 60
-PLAYER_SCALE = 0.28
-TILE_SCALING = 0.32
-PLAYER_MOVEMENT_SPEED = 5
-PLAYER_HEIGHT = 383
-PLAYER_WIDTH = 300
-PLAYER_JUMP_SPEED = 10
-GRASS_TOP = 94
-MULTIPLIER = 2
-TIMER_MAX = 100
-SHRINK_SPEED = 0.01
-GRAVITY = 0.5
 
 
 class Player(arcade.Sprite):
@@ -40,7 +25,7 @@ class Player(arcade.Sprite):
             self.change_x = 0
 
     def jump_duck(self):
-        if LeapsAndBoundsGame.jumping and GRASS_TOP + 0.1 > self.bottom > GRASS_TOP - 0.1 and self.change_y >= 0:
+        if LeapsAndBoundsGame.jumping and self.bottom < GRASS_TOP + 1:
             self.change_y = PLAYER_JUMP_SPEED
 
     def shrink(self):
@@ -56,71 +41,16 @@ class Player(arcade.Sprite):
         self.shrink()
 
 
-class PauseView(arcade.View):
-    """Taken from example on arcade.academy"""
+class EndView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
 
     def on_show(self):
-        arcade.set_background_color(arcade.color.ORANGE)
+        arcade.set_background_color(arcade.color.CRIMSON_GLORY)
 
     def on_draw(self):
         arcade.start_render()
-
-        # Draw player, for effect, on pause screen.
-        # The previous View (GameView) was passed in
-        # and saved in self.game_view.
-        player_sprite = self.game_view.player_list[0]
-        player_sprite.draw()
-
-        # draw an orange filter over him
-        arcade.draw_lrtb_rectangle_filled(left=player_sprite.left,
-                                          right=player_sprite.right,
-                                          top=player_sprite.top,
-                                          bottom=player_sprite.bottom,
-                                          color=arcade.color.ORANGE + (200,))
-
-        arcade.draw_text("PAUSED", WINDOW_WIDTH/2, WINDOW_HEIGHT/2+50,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-
-        # Show tip to return or reset
-        arcade.draw_text("Press Esc. to return",
-                         WINDOW_WIDTH/2,
-                         WINDOW_HEIGHT/2,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
-        arcade.draw_text("Press Enter to reset",
-                         WINDOW_WIDTH/2,
-                         WINDOW_HEIGHT/2-30,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
-
-    def on_key_press(self, key, _modifiers):
-        if key == arcade.key.ESCAPE:   # resume game
-            self.window.show_view(self.game_view)
-        elif key == arcade.key.ENTER:  # reset game
-            game = LeapsAndBoundsGame()
-            self.window.show_view(game)
-
-
-class MenuView(arcade.View):
-    """Taken from example on arcade.academy"""
-    def on_show(self):
-        arcade.set_background_color(arcade.color.WHITE)
-
-    def on_draw(self):
-        arcade.start_render()
-        arcade.draw_text("Menu Screen", WINDOW_WIDTH/2, WINDOW_HEIGHT/2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance.", WINDOW_WIDTH/2, WINDOW_HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
-
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
-        game = LeapsAndBoundsGame()
-        self.window.show_view(game)
 
 
 class LeapsAndBoundsGame(arcade.View):
@@ -137,6 +67,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list = arcade.SpriteList()
         self.rocket_list = arcade.SpriteList()
         self.fish_list = arcade.SpriteList()
+        self.kill_list = arcade.SpriteList()
 
         self.player_list.append(Player())
         self.background_list.append(Grass())
@@ -148,6 +79,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list, GRAVITY)
         self.score = 0
         self.timer = 0
+        self.lives = 3
 
         LeapsAndBoundsGame.left_right = [False, False]
         LeapsAndBoundsGame.jumping = False
@@ -162,14 +94,15 @@ class LeapsAndBoundsGame(arcade.View):
             LeapsAndBoundsGame.shrinking = True
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list, GRAVITY * 2)
         elif symbol == arcade.key.UP or symbol == arcade.key.W or symbol == arcade.key.SPACE:
-            LeapsAndBoundsGame.jumping = True
+            if self.physics_engine.can_jump():
+                LeapsAndBoundsGame.jumping = True
         elif symbol == arcade.key.ESCAPE:
             # pass self, the current view, to preserve this view's state
-            pause = PauseView(self)
+            pause = menu_views.PauseView(self)
             self.window.show_view(pause)
             LeapsAndBoundsGame.left_right = [False, False]
             LeapsAndBoundsGame.shrinking = False
-            LeapsAndBoundsGame.jumping = False
+            LeapsAndBoundsGame.shrinking = False
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
@@ -191,11 +124,13 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list.draw()
         self.rocket_list.draw()
         self.fish_list.draw()
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 20, 20, arcade.color.WHITE, 14)
+        score_output = f"Score: {self.score}"
+        arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
+        lives_output = f"Lives: {self.lives}"
+        arcade.draw_text(lives_output, WINDOW_WIDTH - 100, 20, arcade.color.WHITE, 14)
 
     def increase_time_score(self):
-        self.timer += 1 * MULTIPLIER
+        self.timer += MULTIPLIER
         if self.timer >= TIMER_MAX:
             self.timer = 0
             self.score += 1
@@ -218,12 +153,19 @@ class LeapsAndBoundsGame(arcade.View):
         obstacle_hit_list_rocket = arcade.check_for_collision_with_list(self.player_list[0], self.rocket_list)
         if obstacle_hit_list1 != obstacle_hit_list_rock:
             for obstacle in obstacle_hit_list_rock:
-                obstacle.remove_from_sprite_lists()
-                self.score -= 10
+                self.kill_list.append(obstacle)
+            end = menu_views.EndView(self)
+            self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
             for obstacle in obstacle_hit_list_rocket:
-                obstacle.remove_from_sprite_lists()
-                self.score -= 5
+                if self.lives == 1:
+                    self.kill_list.append(obstacle)
+                    end = menu_views.EndView(self)
+                    self.window.show_view(end)
+                else:
+                    obstacle.remove_from_sprite_lists()
+                    self.lives -= 1
+                    self.score -= 10
 
     def target_collision(self):
         target_hit_list1 = []
@@ -241,6 +183,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list.update()
         self.rocket_list.update()
         self.fish_list.update()
+        self.kill_list.update()
         self.physics_engine.update()
         self.increase_time_score()
         self.obstacle_collision()
@@ -251,7 +194,7 @@ class LeapsAndBoundsGame(arcade.View):
 
 def main():
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, 'The Game')
-    menu = MenuView()
+    menu = menu_views.MenuView()
     window.show_view(menu)
     arcade.run()
 

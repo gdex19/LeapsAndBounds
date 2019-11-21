@@ -135,6 +135,8 @@ class LeapsAndBoundsGame(arcade.Window):
     def spawn_objects(self):
         if not self.obstacle_list:
             self.obstacle_list.append(Rocks())
+        if not self.target_list:
+            self.target_list.append(Rockets())
 
     def obstacle_collision(self):
         obstacle_hit_list1 = []
@@ -143,6 +145,14 @@ class LeapsAndBoundsGame(arcade.Window):
             for obstacle in obstacle_hit_list2:
                 obstacle.remove_from_sprite_lists()
                 self.score -= 10
+
+    def target_collision(self):
+        target_hit_list1 = []
+        target_hit_list2 = arcade.check_for_collision_with_list(self.player_list[0], self.target_list)
+        if target_hit_list1 != target_hit_list2:
+            for target in target_hit_list2:
+                target.remove_from_sprite_lists()
+                self.score += 5
 
     def on_update(self, delta_time):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
@@ -154,6 +164,7 @@ class LeapsAndBoundsGame(arcade.Window):
         self.physics_engine.update()
         self.increase_time_score()
         self.obstacle_collision()
+        self.target_collision()
         self.spawn_objects()
 
 

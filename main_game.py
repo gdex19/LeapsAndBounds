@@ -2,7 +2,7 @@ import arcade
 import menu_views
 # Define constants
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, GRASS_TOP, PLAYER_MOVEMENT_SPEED, \
-    PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY
+    PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE
 from ground_grass import Ground, Grass, Grass2
 from obstacles import Rocks, Rockets
 from targets import Fish
@@ -58,9 +58,10 @@ class LeapsAndBoundsGame(arcade.View):
     jumping = bool
     left_right = list
 
-    def __init__(self):
+    def __init__(self, previous_view):
         """ Setup the game (or reset the game) """
         super().__init__()
+        self.previous_view = previous_view
         self.player_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
         self.floor_list = arcade.SpriteList()
@@ -155,12 +156,14 @@ class LeapsAndBoundsGame(arcade.View):
             for obstacle in obstacle_hit_list_rock:
                 self.kill_list.append(obstacle)
             end = menu_views.EndView(self)
+            self.previous_view.high_scores.append(self.score)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
+                    self.previous_view.high_scores.append(self.score)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()
@@ -193,7 +196,7 @@ class LeapsAndBoundsGame(arcade.View):
 
 
 def main():
-    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, 'The Game')
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_TITLE)
     menu = menu_views.MenuView()
     window.show_view(menu)
     arcade.run()

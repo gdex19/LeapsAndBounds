@@ -1,6 +1,6 @@
 import arcade
 
-GAME_TITLE = "Introduction"
+GAME_TITLE = "Running Man"
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 600
 BACKGROUND_COLOR = arcade.color.AIR_SUPERIORITY_BLUE

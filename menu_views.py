@@ -81,10 +81,10 @@ class EndView(arcade.View):
         super().__init__()
         self.game_view = game_view
         self.high_scores = game_view.previous_view.high_scores
-        self.high_score = False
         if len(self.high_scores) > 0:
             self.high_scores.sort(reverse=True)
-            self.high_score = True
+        if len(self.high_scores) > 3:
+            del self.high_scores[-1]
         print(self.high_scores)
 
     def on_show(self):
@@ -110,24 +110,53 @@ class EndView(arcade.View):
 
         arcade.draw_text("GAME OVER", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-        if self.high_score:
-            arcade.draw_text("HIGH SCORES:\n" + str(self.high_scores[0]) + "\n" + str(self.high_scores[1]) + "\n" +
-                             str(self.high_scores[2]), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 25,
-                             arcade.color.BLACK, font_size=50, anchor_x="center")
+        if len(self.high_scores) == 1:
+            # Show tip to return or reset
+            arcade.draw_text("Score: " + str(self.game_view.score),
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center")
+            arcade.draw_text("Press Enter to reset",
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
+        elif len(self.high_scores) == 2:
+            arcade.draw_text("High Scores:\n" + str(self.high_scores[0]), WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
+                             arcade.color.BLACK, font_size=25, anchor_x="center")
+            if self.game_view.score > self.high_scores[0]:
+                arcade.draw_text("New High Score!", WINDOW_WIDTH / 2, 3 * WINDOW_HEIGHT / 4, arcade.color.BLACK,
+                                 font_size=25, anchor_x="center")
+            arcade.draw_text("Score: " + str(self.game_view.score),
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
+            arcade.draw_text("Press Enter to reset",
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
 
-        # Show tip to return or reset
-        arcade.draw_text("Score: " + str(self.game_view.score),
-                         WINDOW_WIDTH / 2,
-                         WINDOW_HEIGHT / 2,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
-        arcade.draw_text("Press Enter to reset",
-                         WINDOW_WIDTH / 2,
-                         WINDOW_HEIGHT / 2 - 30,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
+        elif len(self.high_scores) == 3:
+            arcade.draw_text("High Scores:\n" + str(self.high_scores[0]) + "\n" + str(self.high_scores[1]),
+                             WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
+                             arcade.color.BLACK, font_size=25, anchor_x="center")
+            if self.game_view.score > self.high_scores[0]:
+                arcade.draw_text("New High Score!", WINDOW_WIDTH / 2, 3 * WINDOW_HEIGHT / 4, arcade.color.BLACK,
+                                 font_size=25, anchor_x="center")
+            arcade.draw_text("Score: " + str(self.game_view.score),
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
+            arcade.draw_text("Press Enter to reset",
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
+
+        elif len(self.high_scores) == 4:
+            arcade.draw_text("High Scores:\n" + str(self.high_scores[0]) + "\n" + str(self.high_scores[1]) + "\n" +
+                             str(self.high_scores[2]), WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
+                             arcade.color.BLACK, font_size=25, anchor_x="center")
+            if self.game_view.score > self.high_scores[0]:
+                arcade.draw_text("New High Score!", WINDOW_WIDTH / 2, 3 * WINDOW_HEIGHT / 4, arcade.color.BLACK,
+                                 font_size=25, anchor_x="center")
+            arcade.draw_text("Score: " + str(self.game_view.score),
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
+            arcade.draw_text("Press Enter to reset",
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
+                             anchor_x="center")
 
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ENTER:  # reset game

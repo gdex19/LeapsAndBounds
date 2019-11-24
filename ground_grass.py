@@ -1,6 +1,7 @@
 import arcade
 
 from constants import GROUND_HEIGHT, WINDOW_WIDTH, GRASS_WIDTH, BACKGROUND_SPEED, GRASS_HEIGHT
+import main_game
 
 
 class Grass(arcade.Sprite):
@@ -16,6 +17,7 @@ class Grass(arcade.Sprite):
         super().update()
         if self.left == -GRASS_WIDTH:
             self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
+        self.change_x = -BACKGROUND_SPEED
 
 
 class Grass2(arcade.Sprite):
@@ -29,6 +31,7 @@ class Grass2(arcade.Sprite):
         super().update()
         if self.left == -GRASS_WIDTH:
             self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
+        self.change_x = -BACKGROUND_SPEED
 
 
 class Ground(arcade.Sprite):

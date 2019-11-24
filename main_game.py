@@ -2,7 +2,8 @@ import arcade
 import menu_views
 # Define constants
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, GRASS_TOP, PLAYER_MOVEMENT_SPEED, \
-    PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE
+    PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, SPEED_TIMER_MAX, \
+    SPEED_INCREMENT
 from ground_grass import Ground, Grass, Grass2
 from obstacles import Rocks, Rockets
 from targets import Fish
@@ -39,18 +40,6 @@ class Player(arcade.Sprite):
         self.lateral_movement()
         self.jump_duck()
         self.shrink()
-
-
-class EndView(arcade.View):
-    def __init__(self, game_view):
-        super().__init__()
-        self.game_view = game_view
-
-    def on_show(self):
-        arcade.set_background_color(arcade.color.CRIMSON_GLORY)
-
-    def on_draw(self):
-        arcade.start_render()
 
 
 class LeapsAndBoundsGame(arcade.View):

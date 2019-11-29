@@ -10,13 +10,13 @@ class Grass(arcade.Sprite):
         super().__init__("images/Grass.png")
         self.center_x = GRASS_WIDTH // 2
         self.center_y = GRASS_HEIGHT // 2
-        self.change_x = -BACKGROUND_SPEED * 1
+        self.change_x = -BACKGROUND_SPEED * GroundTimer.speed
 
     def update(self):
         super().update()
-        if self.left == -GRASS_WIDTH:
-            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
-        self.change_x = -BACKGROUND_SPEED * 1
+        if self.left <= -GRASS_WIDTH:
+            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2 + self.right
+        self.change_x = -BACKGROUND_SPEED * GroundTimer.speed
 
 
 class Grass2(arcade.Sprite):
@@ -24,13 +24,13 @@ class Grass2(arcade.Sprite):
         super().__init__("images/Grass.png")
         self.center_x = GRASS_WIDTH + WINDOW_WIDTH // 2
         self.center_y = GRASS_HEIGHT // 2
-        self.change_x = -BACKGROUND_SPEED * 1
+        self.change_x = -BACKGROUND_SPEED * GroundTimer.speed
 
     def update(self):
         super().update()
-        if self.left == -GRASS_WIDTH:
-            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2
-        self.change_x = -BACKGROUND_SPEED * 1
+        if self.left <= -GRASS_WIDTH:
+            self.center_x = WINDOW_WIDTH + GRASS_WIDTH // 2 + self.right
+        self.change_x = -BACKGROUND_SPEED * GroundTimer.speed
 
 
 class Ground(arcade.Sprite):

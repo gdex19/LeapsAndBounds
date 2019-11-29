@@ -22,6 +22,7 @@ class MainTimer(arcade.Sprite):
             MainTimer.timer = 0
             MainTimer.speed += 0.01
 
+
 class Player(arcade.Sprite):
     def __init__(self):
         super().__init__("images/Character.png", PLAYER_SCALE)

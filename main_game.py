@@ -4,10 +4,23 @@ import menu_views
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, GRASS_TOP, PLAYER_MOVEMENT_SPEED, \
     PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, SPEED_TIMER_MAX, \
     SPEED_INCREMENT
-from ground_grass import Ground, Grass, Grass2
-from obstacles import Rocks, Rockets
-from targets import Fish
+from ground_grass import Ground, Grass, Grass2, GroundTimer
+from obstacles import Rocks, Rockets, ObstacleTimer
+from targets import Fish, Diamond, TargetTimer
 
+
+class MainTimer(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
+        MainTimer.timer = 0
+        MainTimer.speed = 1
+
+    def update(self):
+        super().update()
+        MainTimer.timer += 1
+        if MainTimer.timer >= 100:
+            MainTimer.timer = 0
+            MainTimer.speed += 0.01
 
 class Player(arcade.Sprite):
     def __init__(self):
@@ -51,6 +64,7 @@ class LeapsAndBoundsGame(arcade.View):
         """ Setup the game (or reset the game) """
         super().__init__()
         self.previous_view = previous_view
+        self.timer_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
         self.floor_list = arcade.SpriteList()
@@ -58,7 +72,12 @@ class LeapsAndBoundsGame(arcade.View):
         self.rocket_list = arcade.SpriteList()
         self.fish_list = arcade.SpriteList()
         self.kill_list = arcade.SpriteList()
+        self.diamond_list = arcade.SpriteList()
 
+        self.timer_list.append(GroundTimer())
+        self.timer_list.append(TargetTimer())
+        self.timer_list.append(ObstacleTimer())
+        self.timer_list.append(MainTimer())
         self.player_list.append(Player())
         self.background_list.append(Grass())
         self.background_list.append(Grass2())
@@ -66,6 +85,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list.append(Rocks())
         self.rocket_list.append(Rockets())
         self.fish_list.append(Fish())
+        self.diamond_list.append(Diamond())
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list, GRAVITY)
         self.score = 0
         self.timer = 0
@@ -114,6 +134,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list.draw()
         self.rocket_list.draw()
         self.fish_list.draw()
+        self.diamond_list.draw()
         score_output = f"Score: {self.score}"
         arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
         lives_output = f"Lives: {self.lives}"
@@ -123,7 +144,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.timer += MULTIPLIER
         if self.timer >= TIMER_MAX:
             self.timer = 0
-            self.score += 1
+            self.score += int(1 * MainTimer.speed)
 
     def spawn_obstacles(self):
         if len(self.rock_list) < 1:
@@ -134,8 +155,10 @@ class LeapsAndBoundsGame(arcade.View):
     def spawn_targets(self):
         if len(self.fish_list) < 2:
             self.fish_list.append(Fish())
-        if len(self.fish_list) > 2:
+        elif len(self.fish_list) > 2:
             self.fish_list[2].remove_from_sprite_lists()
+        elif len(self.diamond_list) < 1:
+            self.diamond_list.append(Diamond())
 
     def obstacle_collision(self):
         obstacle_hit_list1 = []
@@ -162,18 +185,25 @@ class LeapsAndBoundsGame(arcade.View):
     def target_collision(self):
         target_hit_list1 = []
         target_hit_list_fish = arcade.check_for_collision_with_list(self.player_list[0], self.fish_list)
+        target_hit_list_diamond = arcade.check_for_collision_with_list(self.player_list[0], self.diamond_list)
         if target_hit_list1 != target_hit_list_fish:
             for target in target_hit_list_fish:
                 target.remove_from_sprite_lists()
                 self.score += 5
+        elif target_hit_list1 != target_hit_list_diamond:
+            for target in target_hit_list_diamond:
+                target.remove_from_sprite_lists()
+                self.score += 20
 
     def on_update(self, delta_time):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
         self.player_list.update()
+        self.timer_list.update()
         self.background_list.update()
         self.floor_list.update()
         self.rock_list.update()
         self.rocket_list.update()
+        self.diamond_list.update()
         self.fish_list.update()
         self.kill_list.update()
         self.physics_engine.update()

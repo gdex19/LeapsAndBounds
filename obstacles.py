@@ -2,7 +2,8 @@ import arcade
 import random
 
 from constants import ROCKET_SCALE, ROCKET_HEIGHT, WINDOW_WIDTH, PLAYER_SCALE, GRASS_TOP, ROCKET_WIDTH, PLAYER_HEIGHT, \
-    ROCKET_SPEED, ROCK_WIDTH, ROCK_HEIGHT, ROCK_SCALE, BACKGROUND_SPEED
+    ROCKET_SPEED, ROCK_WIDTH, ROCK_HEIGHT, ROCK_SCALE, BACKGROUND_SPEED, METEOR_SCALE, SCROLL_SPEED, DIAMOND_SPEED, \
+    WINDOW_HEIGHT, METEOR_SPEED
 
 
 class Rocks(arcade.Sprite):
@@ -35,6 +36,23 @@ class Rockets(arcade.Sprite):
                                                        int(PLAYER_HEIGHT * PLAYER_SCALE +
                                                            ROCKET_HEIGHT * ROCKET_SCALE / 2))
         self.change_x = -ROCKET_SPEED * ObstacleTimer.speed
+
+
+class Meteor(arcade.Sprite):
+    def __init__(self):
+        super().__init__("images/Meteor.png", METEOR_SCALE)
+        self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
+        self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
+        self.change_y = -METEOR_SPEED * ObstacleTimer.speed
+        self.change_x = -SCROLL_SPEED * ObstacleTimer.speed
+
+    def update(self):
+        super().update()
+        if self.bottom <= GRASS_TOP:
+            self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
+            self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
+            self.change_y = -METEOR_SPEED * ObstacleTimer.speed
+            self.change_x = -SCROLL_SPEED * ObstacleTimer.speed
 
 
 class ObstacleTimer(arcade.Sprite):

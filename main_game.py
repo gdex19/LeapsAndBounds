@@ -5,7 +5,7 @@ from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, 
     PLAYER_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, SPEED_TIMER_MAX, \
     SPEED_INCREMENT
 from ground_grass import Ground, Grass, Grass2, GroundTimer
-from obstacles import Rocks, Rockets, ObstacleTimer
+from obstacles import Rocks, Rockets, ObstacleTimer, Meteor
 from targets import Fish, Diamond, TargetTimer
 
 
@@ -74,6 +74,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.fish_list = arcade.SpriteList()
         self.kill_list = arcade.SpriteList()
         self.diamond_list = arcade.SpriteList()
+        self.meteor_list = arcade.SpriteList()
 
         self.timer_list.append(GroundTimer())
         self.timer_list.append(TargetTimer())
@@ -136,6 +137,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rocket_list.draw()
         self.fish_list.draw()
         self.diamond_list.draw()
+        self.meteor_list.draw()
         score_output = f"Score: {self.score}"
         arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
         lives_output = f"Lives: {self.lives}"
@@ -152,6 +154,8 @@ class LeapsAndBoundsGame(arcade.View):
             self.rock_list.append(Rocks())
         if len(self.rocket_list) < 1:
             self.rocket_list.append(Rockets())
+        if self.score >= 10 and len(self.meteor_list) < 1:
+            self.meteor_list.append(Meteor())
 
     def spawn_targets(self):
         if len(self.fish_list) < 2:
@@ -165,6 +169,7 @@ class LeapsAndBoundsGame(arcade.View):
         obstacle_hit_list1 = []
         obstacle_hit_list_rock = arcade.check_for_collision_with_list(self.player_list[0], self.rock_list)
         obstacle_hit_list_rocket = arcade.check_for_collision_with_list(self.player_list[0], self.rocket_list)
+        obstacle_hit_list_meteor = arcade.check_for_collision_with_list(self.player_list[0], self.meteor_list)
         if obstacle_hit_list1 != obstacle_hit_list_rock:
             for obstacle in obstacle_hit_list_rock:
                 self.kill_list.append(obstacle)
@@ -182,6 +187,17 @@ class LeapsAndBoundsGame(arcade.View):
                     obstacle.remove_from_sprite_lists()
                     self.lives -= 1
                     self.score -= 10
+        if obstacle_hit_list1 != obstacle_hit_list_meteor:
+            for obstacle in obstacle_hit_list_meteor:
+                if self.lives == 1:
+                    self.kill_list.append(obstacle)
+                    end = menu_views.EndView(self)
+                    self.previous_view.high_scores.append(self.score)
+                    self.window.show_view(end)
+                else:
+                    obstacle.remove_from_sprite_lists()
+                    self.lives -= 1
+                    self.score -= 50
 
     def target_collision(self):
         target_hit_list1 = []
@@ -205,6 +221,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rock_list.update()
         self.rocket_list.update()
         self.diamond_list.update()
+        self.meteor_list.update()
         self.fish_list.update()
         self.kill_list.update()
         self.physics_engine.update()

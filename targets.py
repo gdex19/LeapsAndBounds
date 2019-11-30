@@ -29,7 +29,7 @@ class Fish(arcade.Sprite):
 class Diamond(arcade.Sprite):
     def __init__(self):
         super().__init__("images/Diamond.png", DIAMOND_SCALE)
-        self.center_x = random.randint(WINDOW_WIDTH, WINDOW_WIDTH * 2)
+        self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
         self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
         self.change_y = -DIAMOND_SPEED * TargetTimer.speed
         self.change_x = -SCROLL_SPEED * TargetTimer.speed

@@ -3,7 +3,7 @@ import menu_views
 # Define constants
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, GRASS_TOP, JACK_MOVEMENT_SPEED, \
     JACK_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, JILL_MOVEMENT_SPEED, \
-    JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT
+    JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT, BACKGROUND_COLOR_HARD
 from ground_grass import Ground, Grass, Grass2, GroundTimer
 from obstacles import Rocks, Rockets, ObstacleTimer, Meteor
 from targets import Fish, Diamond, TargetTimer
@@ -109,6 +109,7 @@ class JackPlayer(arcade.Sprite):
         self.jump_duck()
         self.shrink()
         self.set_texture_scales()
+
 
 class LeapsAndBoundsGame(arcade.View):
     shrinking = bool
@@ -218,6 +219,15 @@ class LeapsAndBoundsGame(arcade.View):
         if self.score >= 250 and len(self.meteor_list) < 1:
             self.meteor_list.append(Meteor())
 
+    def background_change(self):
+        if self.score >= 10:
+            arcade.draw_lrtb_rectangle_filled(left=0,
+                                              right=WINDOW_WIDTH,
+                                              top=GRASS_TOP,
+                                              bottom=0,
+                                              color=arcade.color.LAVA + (150,))
+            arcade.set_background_color(BACKGROUND_COLOR_HARD)
+
     def spawn_targets(self):
         if len(self.fish_list) < 2:
             self.fish_list.append(Fish())
@@ -240,14 +250,14 @@ class LeapsAndBoundsGame(arcade.View):
             for obstacle in obstacle_hit_list_rock:
                 self.kill_list.append(obstacle)
             end = menu_views.EndView(self)
-            self.previous_view.high_scores.append(str(self.score)+": "+self.name)
+            self.previous_view.high_scores.append(self.score)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(str(self.score)+": "+self.name)
+                    self.previous_view.high_scores.append(self.score)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()
@@ -258,7 +268,7 @@ class LeapsAndBoundsGame(arcade.View):
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(str(self.score)+": "+self.name)
+                    self.previous_view.high_scores.append(self.score)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()
@@ -291,8 +301,9 @@ class LeapsAndBoundsGame(arcade.View):
         self.meteor_list.update()
         self.fish_list.update()
         self.kill_list.update()
-        self.fish_count_lives()
         self.physics_engine.update()
+        self.background_change()
+        self.fish_count_lives()
         self.increase_time_score()
         self.obstacle_collision()
         self.target_collision()

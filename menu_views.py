@@ -1,6 +1,6 @@
 import arcade
 import main_game
-from constants import WINDOW_WIDTH, WINDOW_HEIGHT
+from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE
 
 
 class PauseView(arcade.View):
@@ -60,7 +60,9 @@ class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
         self.high_scores = []
-        self.character = 1
+        self.character = 0
+        self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=200, center_y=200)
+        self.jill = arcade.Sprite("images/Jill.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 200, center_y=200)
 
     def on_show(self):
         arcade.set_background_color(arcade.color.WHITE)
@@ -69,12 +71,20 @@ class MenuView(arcade.View):
         arcade.start_render()
         arcade.draw_text("Running Man", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to Play", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 75,
+        arcade.draw_text("Click on a Character to Play", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
+        self.jack.draw()
+        self.jill.draw()
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
-        game = main_game.LeapsAndBoundsGame(self)
-        self.window.show_view(game)
+        if self.jack.collides_with_point([_x, _y]):
+            self.character = 0
+            game = main_game.LeapsAndBoundsGame(self)
+            self.window.show_view(game)
+        elif self.jill.collides_with_point([_x, _y]):
+            self.character = 1
+            game = main_game.LeapsAndBoundsGame(self)
+            self.window.show_view(game)
 
 
 class EndView(arcade.View):

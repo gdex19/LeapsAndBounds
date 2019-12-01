@@ -1,9 +1,9 @@
 import arcade
 import random
 
-from constants import ROCKET_SCALE, ROCKET_HEIGHT, WINDOW_WIDTH, PLAYER_SCALE, GRASS_TOP, ROCKET_WIDTH, PLAYER_HEIGHT, \
-    ROCKET_SPEED, ROCK_WIDTH, ROCK_HEIGHT, ROCK_SCALE, BACKGROUND_SPEED, METEOR_SCALE, SCROLL_SPEED, DIAMOND_SPEED, \
-    WINDOW_HEIGHT, METEOR_SPEED
+from constants import ROCKET_SCALE, ROCKET_HEIGHT, WINDOW_WIDTH, PLAYER_SCALE, GRASS_TOP, ROCKET_WIDTH, \
+    ROCKET_SPEED, ROCK_WIDTH, ROCK_HEIGHT, ROCK_SCALE, BACKGROUND_SPEED, METEOR_SCALE, SCROLL_SPEED, \
+    WINDOW_HEIGHT, METEOR_SPEED, PLAYER_HEAD
 
 
 class Rocks(arcade.Sprite):
@@ -25,7 +25,7 @@ class Rockets(arcade.Sprite):
         super().__init__("images/rocket.png", ROCKET_SCALE)
         self.center_x = (WINDOW_WIDTH + random.randint(WINDOW_WIDTH / 12, WINDOW_WIDTH)) * 2
         self.center_y = GRASS_TOP + random.randint(int(ROCKET_HEIGHT * ROCKET_SCALE / 2),
-                                                   int(PLAYER_HEIGHT * PLAYER_SCALE * 2 + ROCKET_HEIGHT * ROCKET_SCALE / 2))
+                                                   int(PLAYER_HEAD * PLAYER_SCALE * 2 + ROCKET_HEIGHT * ROCKET_SCALE / 2))
         self.change_x = -ROCKET_SPEED * ObstacleTimer.speed
 
     def update(self):
@@ -33,7 +33,7 @@ class Rockets(arcade.Sprite):
         if self.left <= -ROCKET_WIDTH * ROCKET_SCALE:
             self.center_x = (WINDOW_WIDTH + random.randint(WINDOW_WIDTH / 12, WINDOW_WIDTH)) * 2
             self.center_y = GRASS_TOP + random.randint(int(ROCKET_HEIGHT * ROCKET_SCALE / 2),
-                                                       int(PLAYER_HEIGHT * PLAYER_SCALE +
+                                                       int(PLAYER_HEAD * PLAYER_SCALE +
                                                            ROCKET_HEIGHT * ROCKET_SCALE / 2))
         self.change_x = -ROCKET_SPEED * ObstacleTimer.speed
 

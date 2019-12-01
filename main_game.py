@@ -1,9 +1,9 @@
 import arcade
 import menu_views
 # Define constants
-from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, PLAYER_HEIGHT, GRASS_TOP, JACK_MOVEMENT_SPEED, \
+from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, GRASS_TOP, JACK_MOVEMENT_SPEED, \
     JACK_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, JILL_MOVEMENT_SPEED, \
-    JILL_JUMP_SPEED
+    JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT
 from ground_grass import Ground, Grass, Grass2, GroundTimer
 from obstacles import Rocks, Rockets, ObstacleTimer, Meteor
 from targets import Fish, Diamond, TargetTimer
@@ -25,11 +25,11 @@ class MainTimer(arcade.Sprite):
 
 class JillPlayer(arcade.Sprite):
     def __init__(self):
-        super().__init__("images/CharacterRight.png", PLAYER_SCALE)
+        super().__init__("images/Jill.png", PLAYER_SCALE)
         self.center_x = WINDOW_WIDTH / 6
-        self.center_y = GRASS_TOP + PLAYER_HEIGHT * PLAYER_SCALE / 2
-        self.left_facing = arcade.load_texture("images/CharacterRight.png", mirrored=True, scale=self.scale)
-        self.right_facing = arcade.load_texture("images/CharacterRight.png", scale=self.scale)
+        self.center_y = GRASS_TOP + JILL_HEIGHT * PLAYER_SCALE / 2
+        self.left_facing = arcade.load_texture("images/Jill.png", mirrored=True, scale=self.scale)
+        self.right_facing = arcade.load_texture("images/Jill.png", scale=self.scale)
 
     def lateral_movement(self):
         if LeapsAndBoundsGame.left_right[0] and self.left >= 0:
@@ -56,8 +56,8 @@ class JillPlayer(arcade.Sprite):
 
     def set_texture_scales(self):
         if self.scale != PLAYER_SCALE:
-            self.left_facing = arcade.load_texture("images/CharacterRight.png", mirrored=True, scale=self.scale)
-            self.right_facing = arcade.load_texture("images/CharacterRight.png", scale=self.scale)
+            self.left_facing = arcade.load_texture("images/Jill.png", mirrored=True, scale=self.scale)
+            self.right_facing = arcade.load_texture("images/Jill.png", scale=self.scale)
 
     def update(self):
         super().update()
@@ -69,11 +69,11 @@ class JillPlayer(arcade.Sprite):
 
 class JackPlayer(arcade.Sprite):
     def __init__(self):
-        super().__init__("images/CharacterRight.png", PLAYER_SCALE)
+        super().__init__("images/Jack.png", PLAYER_SCALE)
         self.center_x = WINDOW_WIDTH / 6
-        self.center_y = GRASS_TOP + PLAYER_HEIGHT * PLAYER_SCALE / 2
-        self.left_facing = arcade.load_texture("images/CharacterRight.png", mirrored=True, scale=self.scale)
-        self.right_facing = arcade.load_texture("images/CharacterRight.png", scale=self.scale)
+        self.center_y = GRASS_TOP + JACK_HEIGHT * PLAYER_SCALE / 2
+        self.left_facing = arcade.load_texture("images/Jack.png", mirrored=True, scale=self.scale)
+        self.right_facing = arcade.load_texture("images/Jack.png", scale=self.scale)
 
     def lateral_movement(self):
         if LeapsAndBoundsGame.left_right[0] and self.left >= 0:
@@ -100,8 +100,8 @@ class JackPlayer(arcade.Sprite):
 
     def set_texture_scales(self):
         if self.scale != PLAYER_SCALE:
-            self.left_facing = arcade.load_texture("images/CharacterRight.png", mirrored=True, scale=self.scale)
-            self.right_facing = arcade.load_texture("images/CharacterRight.png", scale=self.scale)
+            self.left_facing = arcade.load_texture("images/Jack.png", mirrored=True, scale=self.scale)
+            self.right_facing = arcade.load_texture("images/Jack.png", scale=self.scale)
 
     def update(self):
         super().update()
@@ -130,8 +130,10 @@ class LeapsAndBoundsGame(arcade.View):
         self.diamond_list = arcade.SpriteList()
         self.meteor_list = arcade.SpriteList()
 
-        if self.previous_view.character == 1:
+        if self.previous_view.character == 0:
             self.player_list.append(JackPlayer())
+        elif self.previous_view.character == 1:
+            self.player_list.append(JillPlayer())
 
         self.timer_list.append(GroundTimer())
         self.timer_list.append(TargetTimer())

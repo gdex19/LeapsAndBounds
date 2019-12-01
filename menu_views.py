@@ -11,7 +11,7 @@ class PauseView(arcade.View):
         self.game_view = game_view
 
     def on_show(self):
-        arcade.set_background_color(arcade.color.ORANGE)
+        arcade.set_background_color(arcade.color.PALE_GREEN)
 
     def on_draw(self):
         arcade.start_render()
@@ -27,7 +27,7 @@ class PauseView(arcade.View):
                                           right=player_sprite.right,
                                           top=player_sprite.top,
                                           bottom=player_sprite.bottom,
-                                          color=arcade.color.ORANGE + (200,))
+                                          color=arcade.color.PALE_GREEN + (200,))
 
         arcade.draw_text("PAUSED", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")

@@ -60,6 +60,7 @@ class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
         self.high_scores = []
+        self.character = 1
 
     def on_show(self):
         arcade.set_background_color(arcade.color.WHITE)
@@ -85,7 +86,7 @@ class EndView(arcade.View):
             self.high_scores.sort(reverse=True)
         if len(self.high_scores) > 3:
             del self.high_scores[-1]
-        print(self.high_scores)
+        self.character = game_view.previous_view.character
 
     def on_show(self):
         arcade.set_background_color(arcade.color.CRIMSON_GLORY)

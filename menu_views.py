@@ -99,9 +99,9 @@ class EndView(arcade.View):
         if len(self.high_scores) > 3:
             del self.high_scores[-1]
         self.character = game_view.previous_view.character
-        self.score_value = str(self.game_view.score) + ": " + self.game_view.character
-        self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=150,
-                                  center_y=150)
+        self.score_value = str(self.game_view.score) + ": " + self.game_view.name
+        self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
+                                  center_y=WINDOW_HEIGHT - 150)
         self.jill = arcade.Sprite("images/Jill.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
 
@@ -153,13 +153,19 @@ class EndView(arcade.View):
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
-            arcade.draw_text("Select a Character to Reset",
+            arcade.draw_text("Select a Character, Press Enter to Reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
     def character_switch(self):
-        self.jack.draw()
-        self.jill.draw()
+        if self.character == 0:
+            self.jack.draw()
+            self.jack.center_x = WINDOW_WIDTH - 150
+            self.jill.center_x = -50
+        elif self.character == 1:
+            self.jill.draw()
+            self.jill.center_x = WINDOW_WIDTH - 150
+            self.jack.center_x = -50
 
     def on_draw(self):
         arcade.start_render()
@@ -186,12 +192,11 @@ class EndView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.jack.collides_with_point([x, y]):
-            self.character = 0
-            game = main_game.LeapsAndBoundsGame(self)
-            self.window.show_view(game)
-
-        elif self.jill.collides_with_point([x, y]):
             self.character = 1
+        elif self.jill.collides_with_point([x, y]):
+            self.character = 0
+
+    def on_key_press(self, key, _modifiers):
+        if key == arcade.key.ENTER:  # reset game
             game = main_game.LeapsAndBoundsGame(self)
             self.window.show_view(game)
-

@@ -132,10 +132,10 @@ class LeapsAndBoundsGame(arcade.View):
 
         if self.previous_view.character == 0:
             self.player_list.append(JackPlayer())
-            self.character = "Jack"
+            self.name = "Jack"
         elif self.previous_view.character == 1:
             self.player_list.append(JillPlayer())
-            self.character = "Jill"
+            self.name = "Jill"
 
         self.timer_list.append(GroundTimer())
         self.timer_list.append(TargetTimer())
@@ -240,14 +240,14 @@ class LeapsAndBoundsGame(arcade.View):
             for obstacle in obstacle_hit_list_rock:
                 self.kill_list.append(obstacle)
             end = menu_views.EndView(self)
-            self.previous_view.high_scores.append(str(self.score)+": "+self.character)
+            self.previous_view.high_scores.append(str(self.score)+": "+self.name)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(str(self.score)+": "+self.character)
+                    self.previous_view.high_scores.append(str(self.score)+": "+self.name)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()
@@ -258,7 +258,7 @@ class LeapsAndBoundsGame(arcade.View):
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(str(self.score)+": "+self.character)
+                    self.previous_view.high_scores.append(str(self.score)+": "+self.name)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()

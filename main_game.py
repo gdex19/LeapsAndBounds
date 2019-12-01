@@ -220,7 +220,7 @@ class LeapsAndBoundsGame(arcade.View):
             self.meteor_list.append(Meteor())
 
     def background_change(self):
-        if self.score >= 10:
+        if self.score >= 250:
             arcade.draw_lrtb_rectangle_filled(left=0,
                                               right=WINDOW_WIDTH,
                                               top=GRASS_TOP,

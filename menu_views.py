@@ -104,7 +104,6 @@ class EndView(arcade.View):
         self.jill = arcade.Sprite("images/Jill.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
 
-
     def on_show(self):
         arcade.set_background_color(arcade.color.CRIMSON_GLORY)
 

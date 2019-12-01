@@ -113,7 +113,7 @@ class EndView(arcade.View):
             # Show tip to return or reset
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center")
-            arcade.draw_text("Select a Character to Reset",
+            arcade.draw_text("Press Enter to Reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
         elif len(self.high_scores) == 2:
@@ -125,7 +125,7 @@ class EndView(arcade.View):
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
-            arcade.draw_text("Select a Character to Reset",
+            arcade.draw_text("Press Enter to Reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
@@ -139,7 +139,7 @@ class EndView(arcade.View):
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
-            arcade.draw_text("Select a Character to Reset",
+            arcade.draw_text("Press Enter to Reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
@@ -153,7 +153,7 @@ class EndView(arcade.View):
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
-            arcade.draw_text("Select a Character, Press Enter to Reset",
+            arcade.draw_text("Press Enter to Reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
@@ -189,6 +189,8 @@ class EndView(arcade.View):
 
         arcade.draw_text("GAME OVER", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Character Selection", WINDOW_WIDTH - 150, WINDOW_HEIGHT - 70, arcade.color.BLACK,
+                         font_size=20,anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.jack.collides_with_point([x, y]):

@@ -4,9 +4,10 @@ from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE
 
 
 class PauseView(arcade.View):
-    """Taken from example on arcade.academy"""
+    """View for pause screen"""
 
     def __init__(self, game_view):
+        """Initializes the view and takes in game view in order to return to it"""
         super().__init__()
         self.game_view = game_view
 
@@ -14,6 +15,7 @@ class PauseView(arcade.View):
         arcade.set_background_color(arcade.color.PALE_GREEN)
 
     def on_draw(self):
+        """The text and sprites shown on the screen"""
         arcade.start_render()
 
         # Draw player, for effect, on pause screen.
@@ -31,7 +33,6 @@ class PauseView(arcade.View):
 
         arcade.draw_text("PAUSED", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-
         # Show tip to return or reset
         arcade.draw_text("Press Esc. to return",
                          WINDOW_WIDTH / 2,
@@ -39,25 +40,17 @@ class PauseView(arcade.View):
                          arcade.color.BLACK,
                          font_size=20,
                          anchor_x="center")
-        arcade.draw_text("Select a Character to Reset",
-                         WINDOW_WIDTH / 2,
-                         WINDOW_HEIGHT / 2 - 30,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
 
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:  # resume game
             self.window.show_view(self.game_view)
-        elif key == arcade.key.ENTER:  # reset game
-            game = main_game.LeapsAndBoundsGame()
-            self.window.show_view(game)
 
 
 class MenuView(arcade.View):
-    """Taken from example on arcade.academy"""
+    """The menu view"""
 
     def __init__(self):
+        """Initializes the menu as well as variables needed to pass into the main game function"""
         super().__init__()
         self.high_scores = []
         self.character = 0
@@ -68,6 +61,7 @@ class MenuView(arcade.View):
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
+        """The sprites and text shown on screen"""
         arcade.start_render()
         arcade.draw_text("Leaps and Bounds: The Marathon", WINDOW_WIDTH / 2, WINDOW_HEIGHT * 2 / 3,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
@@ -79,6 +73,7 @@ class MenuView(arcade.View):
         self.jill.draw()
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
+        """Handles the mouse press on menu"""
         if self.jack.collides_with_point([_x, _y]):
             self.character = 0
             game = main_game.LeapsAndBoundsGame(self)
@@ -90,24 +85,31 @@ class MenuView(arcade.View):
 
 
 class EndView(arcade.View):
+    """The view after character's death"""
     def __init__(self, game_view):
+        """Initializes the end screen view and takes in variables from game view"""
         super().__init__()
         self.game_view = game_view
         self.high_scores = game_view.previous_view.high_scores
-        if len(self.high_scores) > 0:
-            self.high_scores.sort(reverse=True)
-        if len(self.high_scores) > 3:
-            del self.high_scores[-1]
+        self.trim_high_scores()
         self.character = game_view.previous_view.character
         self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
         self.jill = arcade.Sprite("images/Jill.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
 
+    def trim_high_scores(self):
+        """Keeps the high score list sorted and trimmed to 3 scores"""
+        if len(self.high_scores) > 0:
+            self.high_scores.sort(reverse=True)
+        if len(self.high_scores) > 3:
+            del self.high_scores[-1]
+
     def on_show(self):
         arcade.set_background_color(arcade.color.CRIMSON_GLORY)
 
     def draw_high_scores(self):
+        """Creates text to show on screen depending on the length of the high score variable"""
         if len(self.high_scores) == 1:
             # Show tip to return or reset
             arcade.draw_text("Score: " + str(self.game_view.score),
@@ -157,6 +159,7 @@ class EndView(arcade.View):
                              anchor_x="center")
 
     def character_switch(self):
+        """Allows for the player to switch characters in between rounds"""
         if self.character == 0:
             self.jack.draw()
             self.jack.center_x = WINDOW_WIDTH - 150
@@ -167,6 +170,7 @@ class EndView(arcade.View):
             self.jack.center_x = -50
 
     def on_draw(self):
+        """Text and sprites to be drawn"""
         arcade.start_render()
         # Draw player, for effect, on pause screen.
         # The previous View (GameView) was passed in
@@ -191,12 +195,14 @@ class EndView(arcade.View):
                          font_size=20, anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """Handles mouse presses for character selection"""
         if self.jack.collides_with_point([x, y]):
             self.character = 1
         elif self.jill.collides_with_point([x, y]):
             self.character = 0
 
     def on_key_press(self, key, _modifiers):
+        """Handles key presses for resetting the game"""
         if key == arcade.key.ENTER:  # reset game
             game = main_game.LeapsAndBoundsGame(self)
             self.window.show_view(game)

@@ -11,11 +11,13 @@ from targets import Fish, Diamond, TargetTimer
 
 class MainTimer(arcade.Sprite):
     def __init__(self):
+        """Sets up timer as a sprite in order to update it constantly"""
         super().__init__()
         MainTimer.timer = 0
         MainTimer.speed = 1
 
     def update(self):
+        """Updates timer every 1/60th of a second and resets it after 100 increments"""
         super().update()
         MainTimer.timer += 1
         if MainTimer.timer >= 100:
@@ -24,7 +26,9 @@ class MainTimer(arcade.Sprite):
 
 
 class JillPlayer(arcade.Sprite):
+    """Class for Jill, a modified version of the original character, Jack."""
     def __init__(self):
+        """Initializes the Jill sprite"""
         super().__init__("images/Jill.png", PLAYER_SCALE)
         self.center_x = WINDOW_WIDTH / 6
         self.center_y = GRASS_TOP + JILL_HEIGHT * PLAYER_SCALE / 2
@@ -32,6 +36,7 @@ class JillPlayer(arcade.Sprite):
         self.right_facing = arcade.load_texture("images/Jill.png", scale=self.scale)
 
     def lateral_movement(self):
+        """Creates lateral movement for the character as well as controls the orientation"""
         if LeapsAndBoundsGame.left_right[0] and self.left >= 0:
             self.texture = self.left_facing
             self.change_x = -JILL_MOVEMENT_SPEED
@@ -44,30 +49,35 @@ class JillPlayer(arcade.Sprite):
         elif not LeapsAndBoundsGame.left_right[1]:
             self.change_x = 0
 
-    def jump_duck(self):
+    def jump(self):
+        """Creates the ability to jump"""
         if LeapsAndBoundsGame.jumping and self.bottom < GRASS_TOP + 1:
             self.change_y = JILL_JUMP_SPEED
 
     def shrink(self):
+        """Shrinks the character on a given input"""
         if LeapsAndBoundsGame.shrinking is True and self.scale >= PLAYER_SCALE / 2:
             self.scale -= SHRINK_SPEED
         elif LeapsAndBoundsGame.shrinking is False and self.scale <= PLAYER_SCALE:
             self.scale += SHRINK_SPEED
 
     def set_texture_scales(self):
+        """Makes the sure the texture stays in scale if the player is shrunk"""
         if self.scale != PLAYER_SCALE:
             self.left_facing = arcade.load_texture("images/Jill.png", mirrored=True, scale=self.scale)
             self.right_facing = arcade.load_texture("images/Jill.png", scale=self.scale)
 
     def update(self):
+        """Updates each aspect of Jill"""
         super().update()
         self.lateral_movement()
-        self.jump_duck()
+        self.jump()
         self.shrink()
         self.set_texture_scales()
 
 
 class JackPlayer(arcade.Sprite):
+    """Class for Jack, the original sprite design."""
     def __init__(self):
         super().__init__("images/Jack.png", PLAYER_SCALE)
         self.center_x = WINDOW_WIDTH / 6
@@ -76,6 +86,7 @@ class JackPlayer(arcade.Sprite):
         self.right_facing = arcade.load_texture("images/Jack.png", scale=self.scale)
 
     def lateral_movement(self):
+        """Creates lateral movement for the character as well as controls the orientation"""
         if LeapsAndBoundsGame.left_right[0] and self.left >= 0:
             self.texture = self.left_facing
             self.change_x = -JACK_MOVEMENT_SPEED
@@ -88,25 +99,29 @@ class JackPlayer(arcade.Sprite):
         elif not LeapsAndBoundsGame.left_right[1]:
             self.change_x = 0
 
-    def jump_duck(self):
+    def jump(self):
+        """Creates the ability to jump"""
         if LeapsAndBoundsGame.jumping and self.bottom < GRASS_TOP + 1:
             self.change_y = JACK_JUMP_SPEED
 
     def shrink(self):
+        """Shrinks the character on a given input"""
         if LeapsAndBoundsGame.shrinking is True and self.scale >= PLAYER_SCALE / 2:
             self.scale -= SHRINK_SPEED
         elif LeapsAndBoundsGame.shrinking is False and self.scale <= PLAYER_SCALE:
             self.scale += SHRINK_SPEED
 
     def set_texture_scales(self):
+        """Makes the sure the texture stays in scale if the player is shrunk"""
         if self.scale != PLAYER_SCALE:
             self.left_facing = arcade.load_texture("images/Jack.png", mirrored=True, scale=self.scale)
             self.right_facing = arcade.load_texture("images/Jack.png", scale=self.scale)
 
     def update(self):
+        """Updates each aspect of Jill"""
         super().update()
         self.lateral_movement()
-        self.jump_duck()
+        self.jump()
         self.shrink()
         self.set_texture_scales()
 
@@ -130,13 +145,9 @@ class LeapsAndBoundsGame(arcade.View):
         self.kill_list = arcade.SpriteList()
         self.diamond_list = arcade.SpriteList()
         self.meteor_list = arcade.SpriteList()
+        self.name = None
 
-        if self.previous_view.character == 0:
-            self.player_list.append(JackPlayer())
-            self.name = "Jack"
-        elif self.previous_view.character == 1:
-            self.player_list.append(JillPlayer())
-            self.name = "Jill"
+        self.choose_character()
 
         self.timer_list.append(GroundTimer())
         self.timer_list.append(TargetTimer())
@@ -150,6 +161,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.fish_list.append(Fish())
         self.diamond_list.append(Diamond())
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_list[0], self.floor_list, GRAVITY)
+
         self.score = 0
         self.timer = 0
         self.lives = 3
@@ -159,7 +171,17 @@ class LeapsAndBoundsGame(arcade.View):
         LeapsAndBoundsGame.jumping = False
         LeapsAndBoundsGame.shrinking = False
 
+    def choose_character(self):
+        """Sets the character based on the previous views character value"""
+        if self.previous_view.character == 0:
+            self.player_list.append(JackPlayer())
+            self.name = "Jack"
+        elif self.previous_view.character == 1:
+            self.player_list.append(JillPlayer())
+            self.name = "Jill"
+
     def on_key_press(self, symbol: int, modifiers: int):
+        """Handles keyboard input"""
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
             LeapsAndBoundsGame.left_right[0] = True
         elif symbol == arcade.key.RIGHT or symbol == arcade.key.D:
@@ -179,6 +201,7 @@ class LeapsAndBoundsGame(arcade.View):
             LeapsAndBoundsGame.shrinking = False
 
     def on_key_release(self, symbol: int, modifiers: int):
+        """Handles keyboard input on release"""
         if symbol == arcade.key.LEFT or symbol == arcade.key.A:
             LeapsAndBoundsGame.left_right[0] = False
         elif symbol == arcade.key.RIGHT or symbol == arcade.key.D:
@@ -206,12 +229,14 @@ class LeapsAndBoundsGame(arcade.View):
         arcade.draw_text(lives_output, WINDOW_WIDTH - 100, 20, arcade.color.WHITE, 14)
 
     def increase_time_score(self):
+        """Increases score with respect to time and the speed of the game"""
         self.timer += MULTIPLIER
         if self.timer >= TIMER_MAX:
             self.timer = 0
             self.score += int(1 * MainTimer.speed)
 
     def spawn_obstacles(self):
+        """Spawns obstacles based on a number of variables"""
         if len(self.rock_list) < 1:
             self.rock_list.append(Rocks())
         if len(self.rocket_list) < 1:
@@ -220,6 +245,7 @@ class LeapsAndBoundsGame(arcade.View):
             self.meteor_list.append(Meteor())
 
     def background_change(self):
+        """Changes background at a certain score"""
         if self.score >= 250:
             arcade.draw_lrtb_rectangle_filled(left=0,
                                               right=WINDOW_WIDTH,
@@ -229,6 +255,7 @@ class LeapsAndBoundsGame(arcade.View):
             arcade.set_background_color(BACKGROUND_COLOR_HARD)
 
     def spawn_targets(self):
+        """Spawns targets based on different variables"""
         if len(self.fish_list) < 2:
             self.fish_list.append(Fish())
         elif len(self.fish_list) > 2:
@@ -237,11 +264,14 @@ class LeapsAndBoundsGame(arcade.View):
             self.diamond_list.append(Diamond())
 
     def fish_count_lives(self):
+        """Counts the number of fish collected to give more lives after 20 are eaten"""
         if self.fish_count >= 20:
             self.lives += 1
             self.fish_count = 0
 
     def obstacle_collision(self):
+        """Tracks collisions with obstacles, changes score and sprite lists accordingly"""
+       # rocket_sound = arcade.Sound("sounds/grenade.mp3")
         obstacle_hit_list1 = []
         obstacle_hit_list_rock = arcade.check_for_collision_with_list(self.player_list[0], self.rock_list)
         obstacle_hit_list_rocket = arcade.check_for_collision_with_list(self.player_list[0], self.rocket_list)
@@ -253,6 +283,7 @@ class LeapsAndBoundsGame(arcade.View):
             self.previous_view.high_scores.append(self.score)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
+            #rocket_sound.play()
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
@@ -276,6 +307,7 @@ class LeapsAndBoundsGame(arcade.View):
                     self.score -= 50
 
     def target_collision(self):
+        """Tracks collisions with targets, changes score and sprite lists accordingly"""
         target_hit_list1 = []
         target_hit_list_fish = arcade.check_for_collision_with_list(self.player_list[0], self.fish_list)
         target_hit_list_diamond = arcade.check_for_collision_with_list(self.player_list[0], self.diamond_list)

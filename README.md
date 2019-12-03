@@ -1,11 +1,12 @@
-# LeapsAndBounds
+# Leaps and Bounds: The Marathon
+This game is an infinite running game based on the idea of leaps and bounds
 
-This is my game for leaps and bounds. It is an infinite
-running game with two characters, Jack and Jill. Jack jumps higher
-and Jill runs faster. During gameplay, fish and diamonds give you
-points. Meteors and rockets will take away both lives and points. 
-Also, collecting 20 fish will give you one extra life. 
-Rocks kill you instantly. As the game continues, it speeds up, making
-it more challenging.
+About:
+Choose Jack or Jill, and shrink, jump, and run around until
+you lose all your lives or hit a rock! Watch out for rockets and 
+meteors, and collect those fish and diamonds!
+
+Preview:
+
 
 Have Fun and Good Luck!

@@ -1,6 +1,5 @@
 import arcade
 import menu_views
-# Define constants
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, GRASS_TOP, JACK_MOVEMENT_SPEED, \
     JACK_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, JILL_MOVEMENT_SPEED, \
     JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT, BACKGROUND_COLOR_HARD, BACKGROUND_COLOR_HARDEST
@@ -212,6 +211,14 @@ class LeapsAndBoundsGame(arcade.View):
         elif symbol == arcade.key.UP or symbol == arcade.key.W or symbol == arcade.key.SPACE:
             LeapsAndBoundsGame.jumping = False
 
+    def fish_bar(self):
+        """Creates a visual for lives gained from fish"""
+        fish_output = f"Fish Bar:"
+        arcade.draw_text(fish_output, WINDOW_WIDTH / 2 - 150, 20, arcade.color.WHITE, 14)
+        arcade.draw_rectangle_filled(WINDOW_WIDTH / 2, 27, 150, 14, arcade.color.PALE_GREEN)
+        arcade.arcade.draw_lrtb_rectangle_filled(WINDOW_WIDTH / 2 - 75, WINDOW_WIDTH / 2 - 75 + 7.5 * self.fish_count,
+                                                 34, 20, arcade.color.CADMIUM_GREEN)
+
     def on_draw(self):
         """ Called when it is time to draw the world """
         arcade.start_render()
@@ -223,10 +230,12 @@ class LeapsAndBoundsGame(arcade.View):
         self.fish_list.draw()
         self.diamond_list.draw()
         self.meteor_list.draw()
+        self.fish_bar()
         score_output = f"Score: {self.score}"
-        arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
         lives_output = f"Lives: {self.lives}"
+        arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
         arcade.draw_text(lives_output, WINDOW_WIDTH - 100, 20, arcade.color.WHITE, 14)
+
 
     def increase_time_score(self):
         """Increases score with respect to time and the speed of the game"""

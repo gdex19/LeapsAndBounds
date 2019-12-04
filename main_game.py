@@ -3,7 +3,7 @@ import menu_views
 # Define constants
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, GRASS_TOP, JACK_MOVEMENT_SPEED, \
     JACK_JUMP_SPEED, SHRINK_SPEED, BACKGROUND_COLOR, TIMER_MAX, MULTIPLIER, GRAVITY, GAME_TITLE, JILL_MOVEMENT_SPEED, \
-    JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT, BACKGROUND_COLOR_HARD
+    JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT, BACKGROUND_COLOR_HARD, BACKGROUND_COLOR_HARDEST
 from ground_grass import Ground, Grass, Grass2, GroundTimer
 from obstacles import Rocks, Rockets, ObstacleTimer, Meteor
 from targets import Fish, Diamond, TargetTimer
@@ -241,18 +241,17 @@ class LeapsAndBoundsGame(arcade.View):
             self.rock_list.append(Rocks())
         if len(self.rocket_list) < 1:
             self.rocket_list.append(Rockets())
-        if self.score >= 250 and len(self.meteor_list) < 1:
+        if 500 > self.score >= 250 and len(self.meteor_list) < 1:
+            self.meteor_list.append(Meteor())
+        if self.score >= 500 and len(self.meteor_list) < 2:
             self.meteor_list.append(Meteor())
 
     def background_change(self):
         """Changes background at a certain score"""
-        if self.score >= 250:
-            arcade.draw_lrtb_rectangle_filled(left=0,
-                                              right=WINDOW_WIDTH,
-                                              top=GRASS_TOP,
-                                              bottom=0,
-                                              color=arcade.color.LAVA + (150,))
+        if 500 > self.score >= 250:
             arcade.set_background_color(BACKGROUND_COLOR_HARD)
+        if self.score >= 500:
+            arcade.set_background_color(BACKGROUND_COLOR_HARDEST)
 
     def spawn_targets(self):
         """Spawns targets based on different variables"""

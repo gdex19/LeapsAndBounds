@@ -271,7 +271,6 @@ class LeapsAndBoundsGame(arcade.View):
 
     def obstacle_collision(self):
         """Tracks collisions with obstacles, changes score and sprite lists accordingly"""
-       # rocket_sound = arcade.Sound("sounds/grenade.mp3")
         obstacle_hit_list1 = []
         obstacle_hit_list_rock = arcade.check_for_collision_with_list(self.player_list[0], self.rock_list)
         obstacle_hit_list_rocket = arcade.check_for_collision_with_list(self.player_list[0], self.rocket_list)
@@ -283,7 +282,6 @@ class LeapsAndBoundsGame(arcade.View):
             self.previous_view.high_scores.append(self.score)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
-            #rocket_sound.play()
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)

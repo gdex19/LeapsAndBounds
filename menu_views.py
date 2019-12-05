@@ -86,38 +86,44 @@ class MenuView(arcade.View):
 
 class EndView(arcade.View):
     """The view after character's death"""
+
     def __init__(self, game_view):
         """Initializes the end screen view and takes in variables from game view"""
         super().__init__()
         self.game_view = game_view
-        self.high_scores = game_view.previous_view.high_scores
-        self.trim_high_scores()
+        self.convert_high_scores()
         self.character = game_view.previous_view.character
         self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
         self.jill = arcade.Sprite("images/Jill.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
                                   center_y=WINDOW_HEIGHT - 150)
 
-    def trim_high_scores(self):
-        """Keeps the high score list sorted and trimmed to 3 scores"""
-        if len(self.high_scores) > 0:
+    def convert_high_scores(self):
+        self.high_scores = []
+        high_scores_raw = open("highscores", "r+")
+        scores_raw = high_scores_raw.readlines()
+        if len(scores_raw) > 0:
+            for score in scores_raw:
+                current_place = score[:-1]
+                self.high_scores.append(int(current_place))
             self.high_scores.sort(reverse=True)
-        if len(self.high_scores) > 3:
-            del self.high_scores[-1]
+            if len(self.high_scores) > 3:
+                self.high_scores = self.high_scores[:3]
+        high_scores_raw.write(str(self.game_view.score) + "\n")
 
     def on_show(self):
         arcade.set_background_color(arcade.color.CRIMSON_GLORY)
 
     def draw_high_scores(self):
         """Creates text to show on screen depending on the length of the high score variable"""
-        if len(self.high_scores) == 1:
+        if len(self.high_scores) == 0:
             # Show tip to return or reset
             arcade.draw_text("Score: " + str(self.game_view.score),
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center")
             arcade.draw_text("Press Enter to reset",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
-        elif len(self.high_scores) == 2:
+        elif len(self.high_scores) == 1:
             arcade.draw_text("High Scores:\n" + str(self.high_scores[0]), WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
                              arcade.color.BLACK, font_size=25, anchor_x="center")
             if self.game_view.score > self.high_scores[0]:
@@ -130,7 +136,7 @@ class EndView(arcade.View):
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
-        elif len(self.high_scores) == 3:
+        elif len(self.high_scores) == 2:
             arcade.draw_text("High Scores:\n" + str(self.high_scores[0]) + "\n" + str(self.high_scores[1]),
                              WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
                              arcade.color.BLACK, font_size=25, anchor_x="center")
@@ -144,7 +150,7 @@ class EndView(arcade.View):
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 30, arcade.color.BLACK, font_size=20,
                              anchor_x="center")
 
-        elif len(self.high_scores) == 4:
+        elif len(self.high_scores) == 3:
             arcade.draw_text("High Scores:\n" + str(self.high_scores[0]) + "\n" + str(self.high_scores[1]) + "\n" +
                              str(self.high_scores[2]), WINDOW_WIDTH / 7, 3 * WINDOW_HEIGHT / 4,
                              arcade.color.BLACK, font_size=25, anchor_x="center")

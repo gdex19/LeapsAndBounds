@@ -289,14 +289,12 @@ class LeapsAndBoundsGame(arcade.View):
             for obstacle in obstacle_hit_list_rock:
                 self.kill_list.append(obstacle)
             end = menu_views.EndView(self)
-            self.previous_view.high_scores.append(self.score)
             self.window.show_view(end)
         if obstacle_hit_list1 != obstacle_hit_list_rocket:
             for obstacle in obstacle_hit_list_rocket:
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(self.score)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()
@@ -307,7 +305,6 @@ class LeapsAndBoundsGame(arcade.View):
                 if self.lives == 1:
                     self.kill_list.append(obstacle)
                     end = menu_views.EndView(self)
-                    self.previous_view.high_scores.append(self.score)
                     self.window.show_view(end)
                 else:
                     obstacle.remove_from_sprite_lists()

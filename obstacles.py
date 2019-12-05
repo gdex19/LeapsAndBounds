@@ -49,8 +49,8 @@ class Meteor(arcade.Sprite):
     def __init__(self):
         """Sets the meteors texture, location, and speed"""
         super().__init__("images/Meteor.png", METEOR_SCALE)
-        self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
-        self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
+        self.center_x = random.randint(WINDOW_HEIGHT * 10 / 3, WINDOW_HEIGHT * 13 / 3)
+        self.center_y = WINDOW_HEIGHT * 5
         self.change_y = -METEOR_SPEED * ObstacleTimer.speed
         self.change_x = -SCROLL_SPEED * ObstacleTimer.speed
 
@@ -58,8 +58,8 @@ class Meteor(arcade.Sprite):
         """Updates the meteors texture, location, and speed"""
         super().update()
         if self.bottom <= GRASS_TOP:
-            self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
-            self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
+            self.center_x = random.randint(WINDOW_HEIGHT * 10 / 3, WINDOW_HEIGHT * 13 / 3)
+            self.center_y = WINDOW_HEIGHT * 5
             self.change_y = -METEOR_SPEED * ObstacleTimer.speed
             self.change_x = -SCROLL_SPEED * ObstacleTimer.speed
 

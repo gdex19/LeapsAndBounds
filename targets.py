@@ -2,7 +2,7 @@ import arcade
 import random
 
 from constants import FISH_SCALE, FISH_HEIGHT, WINDOW_HEIGHT, FISH_WIDTH, WINDOW_WIDTH, GRASS_TOP, SCROLL_SPEED, \
-    FISH_SPEED, DIAMOND_SCALE, DIAMOND_SPEED
+    FISH_SPEED, DIAMOND_SCALE, DIAMOND_SPEED, HEART_SCALE, HEART_SPEED
 
 
 class Fish(arcade.Sprite):
@@ -43,9 +43,29 @@ class Diamond(arcade.Sprite):
         """Updates the sprite's location, speed, and texture"""
         super().update()
         if self.bottom <= GRASS_TOP:
-            self.center_x = random.randint(WINDOW_WIDTH * 1.5, WINDOW_WIDTH * 2.5)
-            self.center_y = WINDOW_HEIGHT + random.randint(WINDOW_HEIGHT * 3, WINDOW_HEIGHT * 4)
+            self.center_x = random.randint(WINDOW_HEIGHT * 10 / 3, WINDOW_HEIGHT * 13 / 3)
+            self.center_y = WINDOW_HEIGHT * 5
             self.change_y = -DIAMOND_SPEED * TargetTimer.speed
+            self.change_x = -SCROLL_SPEED * TargetTimer.speed
+
+
+class Heart(arcade.Sprite):
+    """A sprite to regain lives, represented by a heart, only when they have one life"""
+    def __init__(self):
+        """Initialized the sprite's location, speed, and texture"""
+        super().__init__("images/heart.png", HEART_SCALE)
+        self.center_x = random.randint(int(WINDOW_HEIGHT * 16 / 3) - WINDOW_WIDTH * 2, int(WINDOW_HEIGHT * 19 / 3))
+        self.center_y = WINDOW_HEIGHT * 8
+        self.change_y = -HEART_SPEED * TargetTimer.speed
+        self.change_x = -SCROLL_SPEED * TargetTimer.speed
+
+    def update(self):
+        """Updates the sprite's location, speed, and texture"""
+        super().update()
+        if self.bottom <= GRASS_TOP:
+            self.center_x = random.randint(int(WINDOW_HEIGHT * 16 / 3) - WINDOW_WIDTH * 2, int(WINDOW_HEIGHT * 19 / 3))
+            self.center_y = WINDOW_HEIGHT * 8
+            self.change_y = -HEART_SPEED * TargetTimer.speed
             self.change_x = -SCROLL_SPEED * TargetTimer.speed
 
 

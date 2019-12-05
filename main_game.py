@@ -5,7 +5,7 @@ from constants import WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SCALE, GRASS_TOP, JACK
     JILL_JUMP_SPEED, JILL_HEIGHT, JACK_HEIGHT, BACKGROUND_COLOR_HARD, BACKGROUND_COLOR_HARDEST
 from ground_grass import Ground, Grass, Grass2, GroundTimer
 from obstacles import Rocks, Rockets, ObstacleTimer, Meteor
-from targets import Fish, Diamond, TargetTimer
+from targets import Fish, Diamond, TargetTimer, Heart
 
 
 class MainTimer(arcade.Sprite):
@@ -144,7 +144,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.kill_list = arcade.SpriteList()
         self.diamond_list = arcade.SpriteList()
         self.meteor_list = arcade.SpriteList()
-        self.name = None
+        self.heart_list = arcade.SpriteList()
 
         self.choose_character()
 
@@ -174,10 +174,8 @@ class LeapsAndBoundsGame(arcade.View):
         """Sets the character based on the previous views character value"""
         if self.previous_view.character == 0:
             self.player_list.append(JackPlayer())
-            self.name = "Jack"
         elif self.previous_view.character == 1:
             self.player_list.append(JillPlayer())
-            self.name = "Jill"
 
     def on_key_press(self, symbol: int, modifiers: int):
         """Handles keyboard input"""
@@ -215,9 +213,9 @@ class LeapsAndBoundsGame(arcade.View):
         """Creates a visual for lives gained from fish"""
         fish_output = f"Fish Bar:"
         arcade.draw_text(fish_output, WINDOW_WIDTH / 2 - 150, 20, arcade.color.WHITE, 14)
-        arcade.draw_rectangle_filled(WINDOW_WIDTH / 2, 27, 150, 14, arcade.color.PALE_GREEN)
-        arcade.arcade.draw_lrtb_rectangle_filled(WINDOW_WIDTH / 2 - 75, WINDOW_WIDTH / 2 - 75 + 7.5 * self.fish_count,
-                                                 34, 20, arcade.color.CADMIUM_GREEN)
+        arcade.draw_rectangle_filled(WINDOW_WIDTH / 2, 27, 150, 11, arcade.color.ANTIQUE_WHITE)
+        arcade.arcade.draw_lrtb_rectangle_filled(WINDOW_WIDTH / 2 - 75, WINDOW_WIDTH / 2 + 7.5 * self.fish_count - 75,
+                                                 33, 21, arcade.color.CADMIUM_GREEN)
 
     def on_draw(self):
         """ Called when it is time to draw the world """
@@ -230,12 +228,12 @@ class LeapsAndBoundsGame(arcade.View):
         self.fish_list.draw()
         self.diamond_list.draw()
         self.meteor_list.draw()
+        self.heart_list.draw()
         self.fish_bar()
         score_output = f"Score: {self.score}"
         lives_output = f"Lives: {self.lives}"
         arcade.draw_text(score_output, 20, 20, arcade.color.WHITE, 14)
         arcade.draw_text(lives_output, WINDOW_WIDTH - 100, 20, arcade.color.WHITE, 14)
-
 
     def increase_time_score(self):
         """Increases score with respect to time and the speed of the game"""
@@ -266,10 +264,14 @@ class LeapsAndBoundsGame(arcade.View):
         """Spawns targets based on different variables"""
         if len(self.fish_list) < 2:
             self.fish_list.append(Fish())
-        elif len(self.fish_list) > 2:
-            self.fish_list[2].remove_from_sprite_lists()
-        elif len(self.diamond_list) < 1:
+        if len(self.diamond_list) < 1:
             self.diamond_list.append(Diamond())
+        if self.score >= 500 and self.lives == 1:
+            if len(self.heart_list) < 1:
+                self.heart_list.append(Heart())
+                print(1)
+        if len(self.fish_list) > 2:
+            self.fish_list[2].remove_from_sprite_lists()
 
     def fish_count_lives(self):
         """Counts the number of fish collected to give more lives after 20 are eaten"""
@@ -313,10 +315,11 @@ class LeapsAndBoundsGame(arcade.View):
                     self.score -= 50
 
     def target_collision(self):
-        """Tracks collisions with targets, changes score and sprite lists accordingly"""
+        """Tracks collisions with targets, changes score, lives, and sprite lists accordingly"""
         target_hit_list1 = []
         target_hit_list_fish = arcade.check_for_collision_with_list(self.player_list[0], self.fish_list)
         target_hit_list_diamond = arcade.check_for_collision_with_list(self.player_list[0], self.diamond_list)
+        target_hit_list_heart = arcade.check_for_collision_with_list(self.player_list[0], self.heart_list)
         if target_hit_list1 != target_hit_list_fish:
             for target in target_hit_list_fish:
                 target.remove_from_sprite_lists()
@@ -326,6 +329,11 @@ class LeapsAndBoundsGame(arcade.View):
             for target in target_hit_list_diamond:
                 target.remove_from_sprite_lists()
                 self.score += 20
+        elif target_hit_list1 != target_hit_list_heart:
+            for target in target_hit_list_heart:
+                target.remove_from_sprite_lists()
+                self.fish_count = 0
+                self.lives += 1
 
     def on_update(self, delta_time):
         """ Called every frame of the game (1/GAME_SPEED times per second)"""
@@ -337,6 +345,7 @@ class LeapsAndBoundsGame(arcade.View):
         self.rocket_list.update()
         self.diamond_list.update()
         self.meteor_list.update()
+        self.heart_list.update()
         self.fish_list.update()
         self.kill_list.update()
         self.physics_engine.update()

@@ -91,6 +91,7 @@ class EndView(arcade.View):
         """Initializes the end screen view and takes in variables from game view"""
         super().__init__()
         self.game_view = game_view
+        self.high_scores = []
         self.convert_high_scores()
         self.character = game_view.previous_view.character
         self.jack = arcade.Sprite("images/Jack.png", scale=PLAYER_SCALE, center_x=WINDOW_WIDTH - 150,
@@ -99,7 +100,8 @@ class EndView(arcade.View):
                                   center_y=WINDOW_HEIGHT - 150)
 
     def convert_high_scores(self):
-        self.high_scores = []
+        """Takes the score from each round and adds it to the highscores file and edits the highscore list for printing
+        """
         high_scores_raw = open("highscores", "r+")
         scores_raw = high_scores_raw.readlines()
         if len(scores_raw) > 0:

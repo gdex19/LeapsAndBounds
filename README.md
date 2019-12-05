@@ -8,7 +8,8 @@ Choose Jack or Jill, then shrink, jump, and run around until
 you lose all your lives or hit a rock. Jack jumps higher,
 and Jill runs faster. Watch out for rockets and 
 meteors, and collect those fish and diamonds! Also, if you
-eat enough fish (20), it might be good for your health ;).
+eat enough fish (20), it might be good for your health. If
+you're lucky, you might find an extra life later in the game!
 
 ### Preview
 ### Installation

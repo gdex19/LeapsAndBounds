@@ -269,7 +269,6 @@ class LeapsAndBoundsGame(arcade.View):
         if self.score >= 500 and self.lives == 1:
             if len(self.heart_list) < 1:
                 self.heart_list.append(Heart())
-                print(1)
         if len(self.fish_list) > 2:
             self.fish_list[2].remove_from_sprite_lists()
 

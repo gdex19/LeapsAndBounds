@@ -100,7 +100,7 @@ class EndView(arcade.View):
                                   center_y=WINDOW_HEIGHT - 150)
 
     def convert_high_scores(self):
-        """Takes the score from each round and adds it to the highscores file and edits the highscore list for printing
+        """Takes the score from each round and adds it to the highscores file and edits the highscore list for display
         """
         high_scores_raw = open("highscores", "r+")
         scores_raw = high_scores_raw.readlines()
